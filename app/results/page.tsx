@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle, Clock, User, RotateCcw } from "lucide-react"
+import { motion } from "framer-motion"
 
 interface Question {
   question: string
@@ -74,51 +75,97 @@ export default function ResultsPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto p-4 space-y-6">
+      <motion.div 
+        className="max-w-4xl mx-auto p-4 space-y-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         {/* Summary Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <User className="h-5 w-5" />
-              <span>Quiz Summary</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="text-center space-y-2">
-                <div className="text-lg font-bold text-blue-600 break-all px-2">{userEmail}</div>
-                <div className="text-sm text-gray-500">Participant</div>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <User className="h-5 w-5" />
+                <span>Quiz Summary</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <motion.div 
+                  className="text-center space-y-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.4 }}
+                >
+                  <div className="text-lg font-bold text-blue-600 break-all px-2">{userEmail}</div>
+                  <div className="text-sm text-gray-500">Participant</div>
+                </motion.div>
+                <motion.div 
+                  className="text-center space-y-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.4 }}
+                >
+                  <div className="text-2xl font-bold text-green-600">
+                    {correctAnswers}/{totalQuestions}
+                  </div>
+                  <div className="text-sm text-gray-500">Correct Answers</div>
+                </motion.div>
+                <motion.div 
+                  className="text-center space-y-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.4 }}
+                >
+                  <div className="text-2xl font-bold text-purple-600">{score}%</div>
+                  <div className="text-sm text-gray-500">Score</div>
+                </motion.div>
+                <motion.div 
+                  className="text-center space-y-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.4 }}
+                >
+                  <div className="text-2xl font-bold text-orange-600 flex items-center justify-center space-x-1">
+                    <Clock className="h-5 w-5" />
+                    <span>{timeUsedFormatted}</span>
+                  </div>
+                  <div className="text-sm text-gray-500">Time Used</div>
+                </motion.div>
               </div>
-              <div className="text-center space-y-2">
-                <div className="text-2xl font-bold text-green-600">
-                  {correctAnswers}/{totalQuestions}
-                </div>
-                <div className="text-sm text-gray-500">Correct Answers</div>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="text-2xl font-bold text-purple-600">{score}%</div>
-                <div className="text-sm text-gray-500">Score</div>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="text-2xl font-bold text-orange-600 flex items-center justify-center space-x-1">
-                  <Clock className="h-5 w-5" />
-                  <span>{timeUsedFormatted}</span>
-                </div>
-                <div className="text-sm text-gray-500">Time Used</div>
-              </div>
-            </div>
 
-            <div className="mt-8 flex justify-center">
-              <Button onClick={handleRetakeQuiz} className="flex items-center space-x-2">
-                <RotateCcw className="h-4 w-4" />
-                <span>Retake Quiz</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+              <motion.div 
+                className="mt-8 flex justify-center"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1, duration: 0.4 }}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button onClick={handleRetakeQuiz} className="flex items-center space-x-2">
+                    <RotateCcw className="h-4 w-4" />
+                    <span>Retake Quiz</span>
+                  </Button>
+                </motion.div>
+              </motion.div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Detailed Results */}
-        <div className="space-y-4">
+        <motion.div 
+          className="space-y-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 1.2 }}
+        >
           <h2 className="text-xl font-semibold">Detailed Results</h2>
 
           {results.questions.map((question, index) => {
@@ -128,12 +175,17 @@ export default function ResultsPage() {
             const allChoices = [...question.incorrect_answers, question.correct_answer].sort()
 
             return (
-              <Card
+              <motion.div
                 key={index}
-                className={`border-l-4 ${
-                  !wasAnswered ? "border-l-gray-400" : isCorrect ? "border-l-green-500" : "border-l-red-500"
-                }`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
               >
+                <Card
+                  className={`border-l-4 ${
+                    !wasAnswered ? "border-l-gray-400" : isCorrect ? "border-l-green-500" : "border-l-red-500"
+                  }`}
+                >
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <CardTitle className="text-lg flex items-center space-x-2">
@@ -189,10 +241,11 @@ export default function ResultsPage() {
                   </div>
                 </CardContent>
               </Card>
+              </motion.div>
             )
           })}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   )
 }

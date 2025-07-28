@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { Clock, CheckCircle, Circle, Eye } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface Question {
   question: string
@@ -131,10 +132,26 @@ export default function QuizPage() {
   if (quizState.isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-lg">Loading quiz questions...</p>
-        </div>
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.div 
+            className="rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          ></motion.div>
+          <motion.p 
+            className="text-lg"
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            Loading quiz questions...
+          </motion.p>
+        </motion.div>
       </div>
     )
   }
@@ -236,7 +253,12 @@ export default function QuizPage() {
         </div>
 
         {/* Main Question Area */}
-        <div className="lg:col-span-3">
+        <motion.div 
+          className="lg:col-span-3"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
+        >
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -247,44 +269,89 @@ export default function QuizPage() {
                   {currentQ.category} • {currentQ.difficulty}
                 </div>
               </div>
-              <Progress value={progress} className="w-full" />
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: currentQ.question }} />
-
-              <RadioGroup
-                value={quizState.answers[quizState.currentQuestion] || ""}
-                onValueChange={handleAnswerChange}
-                className="space-y-3"
+              <motion.div 
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.4 }}
+                style={{ originX: 0 }}
               >
-                {allChoices.map((choice, index) => (
-                  <div key={index} className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-gray-50">
-                    <RadioGroupItem value={choice} id={`choice-${index}`} />
-                    <Label
-                      htmlFor={`choice-${index}`}
-                      className="flex-1 cursor-pointer"
-                      dangerouslySetInnerHTML={{ __html: choice }}
-                    />
-                  </div>
-                ))}
-              </RadioGroup>
+                <Progress value={progress} className="w-full" />
+              </motion.div>
+            </CardHeader>
+            <CardContent className="space-y-6 overflow-hidden">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={quizState.currentQuestion}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: currentQ.question }} />
+                </motion.div>
+              </AnimatePresence>
 
-              <div className="flex justify-between pt-4">
-                <Button onClick={handlePrevious} disabled={quizState.currentQuestion === 0} variant="outline">
-                  Previous
-                </Button>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={quizState.currentQuestion}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                >
+                  <RadioGroup
+                    value={quizState.answers[quizState.currentQuestion] || ""}
+                    onValueChange={handleAnswerChange}
+                    className="space-y-3"
+                  >
+                    {allChoices.map((choice, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2, delay: 0.1 + index * 0.1 }}
+                        whileHover={{ scale: 1.01 }}
+                        className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-gray-50"
+                      >
+                        <RadioGroupItem value={choice} id={`choice-${index}`} />
+                        <Label
+                          htmlFor={`choice-${index}`}
+                          className="flex-1 cursor-pointer"
+                          dangerouslySetInnerHTML={{ __html: choice }}
+                        />
+                      </motion.div>
+                    ))}
+                  </RadioGroup>
+                </motion.div>
+              </AnimatePresence>
+
+              <motion.div 
+                className="flex justify-between pt-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button onClick={handlePrevious} disabled={quizState.currentQuestion === 0} variant="outline">
+                    Previous
+                  </Button>
+                </motion.div>
 
                 <div className="space-x-2">
                   {quizState.currentQuestion === quizState.questions.length - 1 ? (
-                    <Button onClick={handleSubmitQuiz}>Submit Quiz</Button>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button onClick={handleSubmitQuiz}>Submit Quiz</Button>
+                    </motion.div>
                   ) : (
-                    <Button onClick={handleNext}>Next</Button>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button onClick={handleNext}>Next</Button>
+                    </motion.div>
                   )}
                 </div>
-              </div>
+              </motion.div>
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </div>
     </div>
   )
