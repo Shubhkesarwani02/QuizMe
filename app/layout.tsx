@@ -4,9 +4,9 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Quizzy',
+  title: 'QuizMe',
   description: 'A simple quiz app',
-  generator: 'Quizzy',
+  generator: 'QuizMe',
 }
 
 export default function RootLayout({
